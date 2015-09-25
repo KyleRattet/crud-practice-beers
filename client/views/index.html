@@ -13,7 +13,8 @@
 
   <div class="add-beer">
 
-    <h1 class="text-center">Add a Beer</h1>
+    <h1 class="text-center" ng-hide="edit">Add a Beer</h1>
+    <h1 class="text-center"ng-show="edit">Edit a Beer</h1>
 
     <form>
       <div class="form-group">
@@ -25,7 +26,8 @@
       <div class="form-group">
         <input type="number" step="0.1" class="form-control" ng-model="beer.abv" placeholder="Enter the beer abv" required>
       </div>
-      <button type="submit" ng-click="postBeer()" class="btn btn-primary btn-block">Submit</button>
+      <button type="submit" ng-click="postBeer()" ng-hide="edit" class="btn btn-primary btn-block">Submit Beer</button>
+      <button type="submit" ng-show="edit" ng-click="updateBeer()" class="btn btn-primary btn-block">Update Beer</button>
     </form>
 
   </div>
@@ -54,8 +56,8 @@
           <td>{{ beer.type }}</td>
           <td>{{ beer.abv }}</td>
           <td class="text-right">
-          <button class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></button>
-          <button class="btn btn-danger"><span class="glyphicon glyphicon-remove"></span></button>
+          <button ng-click="editBeer(beer._id)"class="btn btn-primary"><span class="glyphicon glyphicon-pencil"></span></button>
+          <button ng-click="deleteBeer(beer._id)"class="btn btn-danger"><span class="glyphicon glyphicon-trash"></span></button>
           </td>
         </tr>
 

@@ -2,6 +2,12 @@ app.controller("BeerController", function($scope, httpFactory, $timeout){
 
   //message section
   $scope.success = false;
+  $scope.message = "";
+  $scope.beer = {};
+  $scope.edit = false;
+
+  //this is out beer url
+  $scope.findBeer = "";
   //gets all the beers, moved to services
   // $http.get('/api/v1/beers')
   // .then(function(response){
@@ -63,8 +69,54 @@ app.controller("BeerController", function($scope, httpFactory, $timeout){
 
   };
 
+  //delete request portion
+  $scope.deleteBeer = function (id) {
+    //endpoint to use for a http delete request, we'll define this in a factory
+    $scope.findBeer = "api/v1/beer/"+ id;
+    httpFactory.delete($scope.findBeer)
+    .then(function(response) {
+
+      $scope.success = true;
+      $scope.message = "Deleted that beer!";
+
+      //set timeout to close success message, need to add $timeout to pass in at the top
+      $timeout(messageTimeout, 5000);
+      console.log(response);
+      //call getbeers again to update the list of beers
+      getBeers('api/v1/beers');
+    });
+  };
 
 
+  ///edit beer portion, pulls values to the form
+  $scope.editBeer = function (id) {
+    $scope.findBeer = "api/v1/beer/"+ id;
+    httpFactory.get($scope.findBeer)
+    .then(function(response){
+      $scope.beer = response.data;
+    });
+    $scope.edit = true;
+  };
 
+  //update beer, on update sumbit
+  $scope.updateBeer = function () {
+
+    //send updated object with beer attributes
+    var update = $scope.beer;
+
+    httpFactory.put($scope.findBeer, update)
+    .then(function(response){
+
+      $scope.success = true;
+      $scope.message = "Updated that beer!";
+
+      //set timeout to close success message, need to add $timeout to pass in at the top
+      $timeout(messageTimeout, 5000);
+      $scope.beer = {};
+      $scope.edit = false;
+
+      getBeers('api/v1/beers');
+    });
+  };
 
 });
